@@ -1,0 +1,92 @@
+#
+# EPITECH C CODING STYLE COMPLIANT CLANG FORMAT
+#
+
+# GLOBAL
+Standard: Latest
+
+# INDENTATION
+UseTab: Never
+TabWidth: 4
+ContinuationIndentWidth: 4
+IndentWidth: 4
+# IndentAccessModifiers: true
+IndentCaseBlocks: true
+IndentCaseLabels: true
+NamespaceIndentation: All
+#BE CAREFUL! THIS WILL NOT INDENT IFNDEF -> pragma once
+IndentPPDirectives: BeforeHash
+PPIndentWidth: 4
+
+# BREAKS
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterCaseLabel: false
+    AfterControlStatement: false
+    AfterEnum: false
+    AfterFunction: true
+    AfterNamespace: true
+    AfterStruct: false
+    AfterUnion: false
+    AfterExternBlock: true
+    BeforeCatch: false
+    BeforeElse: false
+    IndentBraces: false
+    SplitEmptyFunction: true
+    SplitEmptyRecord: true
+    SplitEmptyNamespace: true
+AlwaysBreakAfterReturnType: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: None
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+BreakBeforeTernaryOperators: true
+BreakBeforeBinaryOperators: None
+
+# MAX COLUMNS
+ColumnLimit: 79
+ReflowComments: true
+FixNamespaceComments: false
+BreakStringLiterals: true
+
+# ALIGNMENT
+AlignAfterOpenBracket: DontAlign
+IndentWrappedFunctionNames: false
+BinPackArguments: true
+BinPackParameters: true
+AlignOperands: false
+AlignEscapedNewlines: Left
+
+# SPACES & EMPTY LINES
+EmptyLineBeforeAccessModifier: Always
+EmptyLineAfterAccessModifier: Never
+Cpp11BracedListStyle: true
+PointerAlignment: Right
+ReferenceAlignment: Pointer
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+SpacesInAngles: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpacesInContainerLiterals: false
+SpacesInConditionalStatement: false
+SpaceInEmptyParentheses: false
+SpaceBeforeParens: ControlStatements
+SpaceBeforeCaseColon: false
+SpaceBeforeAssignmentOperators: true
+SpacesInCStyleCastParentheses: false
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: true
+
+# AVOID MULTI DECLARATION
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+
+# BRACES / ENABLE IF CLANG-FORMAT>=14
+# RemoveBracesLLVM: true
