@@ -11,19 +11,16 @@ RM	= 	rm -rf
 
 MAIN	=	src/main.c
 
-SRC	=	src/particle_refresh_funcs.c	\
-		src/enemy_attack_common.c	\
-		src/get_socket_line.c		\
-		src/particle_array.c		\
-		src/fireworks.c			\
-		src/particle.c			\
-		src/players.c			\
-		src/enemies.c			\
-		src/attack.c
+SRC	=	src/get_socket_line.c	\
+		src/manage_clients.c	\
+		src/init_server.c	\
+		src/players.c		\
+		src/attacks.c		\
+		src/enemies.c
 
 OBJ	=	$(SRC:.c=.o)
 
-LDFLAGS	=	-lcsfml-graphics -lcsfml-system -lcsfml-window -lm
+LDFLAGS	=	-lcsfml-system
 CFLAGS	=	-Wall -Wextra
 CPPFLAGS=	-I include
 
@@ -31,7 +28,7 @@ OK	=	\e[32m
 RED	=	\e[91m
 END	=	\e[0m
 
-NAME	=	particle
+NAME	=	server
 
 DEBUG	=	0
 MON	=	0
@@ -61,14 +58,6 @@ $(NAME): $(SRC) $(MAIN)
 	@$(CC) -o $(NAME) $(OBJ) $(LDFLAGS) && \
 	echo -e "$(OK)[DONE]\t$(NAME)$(END)" || \
 	echo -e "$(RED)[FAILURE]\t$(NAME)$(END)"
-
-PHONY += server
-server:
-	@$(MAKE) -s -C server re
-
-PHONY += server_clean
-server_clean:
-	@$(MAKE) -s -C server fclean
 
 %.o: %.c
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< && \
