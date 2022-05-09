@@ -67,19 +67,20 @@ int listen_clients(file_descriptor_t server)
     enemies_t *enemies = NULL;
     attacks_t *attacks = NULL;
     struct timeval tv;
-    time_t spawn_clock = time(NULL);
     struct timespec move_clock;
+    struct timespec spawn_clock;
     struct timespec refresh;
-    uint64_t delta_ms;
-    time_t delta;
+    unsigned long int delta_ms;
     int score = 0;
     char buffer[4096] = {0};
     int speed;
     int position;
     int id_giver = 0;
+    int delay = 4000;
 
     srand(time(NULL));
     clock_gettime(CLOCK_MONOTONIC_RAW, &move_clock);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &spawn_clock);
     FD_ZERO(&sockets);
     safe_fd_set(server, &sockets, &max_fd);
     while (1) {
@@ -141,18 +142,22 @@ int listen_clients(file_descriptor_t server)
             }
             tmp = tmp->next;
         }
-        delta = time(NULL) - spawn_clock;
-        if (delta >= 2 && players) {
+        clock_gettime(CLOCK_MONOTONIC_RAW, &refresh);
+        delta_ms = (refresh.tv_sec - spawn_clock.tv_sec) * 1000 +
+            (refresh.tv_nsec - spawn_clock.tv_nsec) / 1000000;
+        if ((delta_ms >= delay) && players) {
             position = (rand() % 450) + 25;
             speed = (rand() % 2) + 2;
             id_giver = (id_giver + 1) % 999;
             enemy_push(&enemies, id_giver, position, speed);
             players_broadcast(
                 players, "spwn:%d:%d:%d", id_giver, position, speed);
-            spawn_clock = time(NULL);
+            if (delay > 700)
+                delay -= 5;
+            clock_gettime(CLOCK_MONOTONIC_RAW, &spawn_clock);
         }
         clock_gettime(CLOCK_MONOTONIC_RAW, &refresh);
-        delta_ms = (refresh.tv_sec - move_clock.tv_sec) * 1000000 +
+        delta_ms = (refresh.tv_sec - move_clock.tv_sec) * 1000 +
             (refresh.tv_nsec - move_clock.tv_nsec) / 1000000;
         if (delta_ms >= 25) {
             if (attacks)
