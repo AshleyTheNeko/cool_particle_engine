@@ -1,8 +1,8 @@
 #include "server_types.h"
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <sys/socket.h>
 #include <stdio.h>
+#include <sys/socket.h>
 
 static struct sockaddr_in get_settings(int port_number)
 {

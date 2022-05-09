@@ -1,3 +1,4 @@
+#include "attack_enemy.h"
 #include "player.h"
 #include "server.h"
 #include <arpa/inet.h>
@@ -25,8 +26,8 @@ int safe_fd_clr(int fd, fd_set *fds, int *max_fd)
     return 0;
 }
 
-static void parse_client_message(
-    players_t *players, players_t *from, char *message)
+static void parse_client_message(players_t *players, players_t *from,
+    char *message, attacks_t **attacks, int *id_giver)
 {
     char *tmp;
 
@@ -46,8 +47,10 @@ static void parse_client_message(
         return;
     }
     if (!strcmp(tmp, "atk")) {
-        tmp = strtok(NULL, ":");
-        players_broadcast(players, "atk:%d", atoi(tmp));
+        *id_giver = ((*id_giver) + 1) % 999;
+        attack_push(attacks, *id_giver, from->position + 13);
+        players_broadcast(
+            players, "atk:%d:%d", *id_giver, from->position + 13);
         return;
     }
 }
@@ -61,20 +64,31 @@ int listen_clients(file_descriptor_t server)
     file_descriptor_t tmp_socket;
     int max_fd;
     players_t *players = NULL;
+    enemies_t *enemies = NULL;
+    attacks_t *attacks = NULL;
     struct timeval tv;
     time_t spawn_clock = time(NULL);
+    struct timespec move_clock;
+    struct timespec refresh;
+    uint64_t delta_ms;
     time_t delta;
+    int score = 0;
     char buffer[4096] = {0};
+    int speed;
+    int position;
+    int id_giver = 0;
 
+    srand(time(NULL));
+    clock_gettime(CLOCK_MONOTONIC_RAW, &move_clock);
     FD_ZERO(&sockets);
     safe_fd_set(server, &sockets, &max_fd);
     while (1) {
         sockets_tmp = sockets;
 
-        tv = (struct timeval){1, 0};
+        tv = (struct timeval){0, 5000};
         if (select(max_fd + 1, &sockets_tmp, NULL, NULL, &tv) < 0) {
             perror("select");
-            return -1;
+            return (-1);
         }
         if (FD_ISSET(server, &sockets_tmp)) {
             client = accept(server, (struct sockaddr *)&client_settings,
@@ -87,10 +101,25 @@ int listen_clients(file_descriptor_t server)
             printf("Player %d connect.\n", client);
             safe_fd_set(client, &sockets, &max_fd);
             player_push(&players, client);
+            dprintf(client, "scr:%d\n", score);
             dprintf(client, "pls");
             for (players_t *tmp = players; tmp; tmp = tmp->next)
                 dprintf(client, ":%d:%d", tmp->socket, tmp->position);
             dprintf(client, "\n");
+            if (attacks) {
+                dprintf(client, "atks");
+                for (attacks_t *tmp = attacks; tmp; tmp = tmp->next)
+                    dprintf(
+                        client, ":%d:%d:%d", tmp->id, tmp->x_pos, tmp->y_pos);
+                dprintf(client, "\n");
+            }
+            if (enemies) {
+                dprintf(client, "enys");
+                for (enemies_t *tmp = enemies; tmp; tmp = tmp->next)
+                    dprintf(client, ":%d:%d:%d:%d", tmp->id, tmp->x_pos,
+                        tmp->y_pos, tmp->speed);
+                dprintf(client, "\n");
+            }
         }
         for (players_t *tmp = players; tmp;) {
             if (FD_ISSET(tmp->socket, &sockets_tmp)) {
@@ -107,13 +136,32 @@ int listen_clients(file_descriptor_t server)
                     players_broadcast(players, "dis:%d", tmp_socket);
                     continue;
                 }
-                parse_client_message(players, tmp, buffer);
+                parse_client_message(
+                    players, tmp, buffer, &attacks, &id_giver);
             }
             tmp = tmp->next;
         }
         delta = time(NULL) - spawn_clock;
-        if (delta >= 2) {
+        if (delta >= 2 && players) {
+            position = (rand() % 450) + 25;
+            speed = (rand() % 2) + 2;
+            id_giver = (id_giver + 1) % 999;
+            enemy_push(&enemies, id_giver, position, speed);
+            players_broadcast(
+                players, "spwn:%d:%d:%d", id_giver, position, speed);
             spawn_clock = time(NULL);
+        }
+        clock_gettime(CLOCK_MONOTONIC_RAW, &refresh);
+        delta_ms = (refresh.tv_sec - move_clock.tv_sec) * 1000000 +
+            (refresh.tv_nsec - move_clock.tv_nsec) / 1000000;
+        if (delta_ms >= 25) {
+            if (attacks)
+                attacks = attacks_refresh(attacks, players);
+            if (enemies)
+                enemies = enemies_refresh(enemies, players, &score);
+            if (attacks && enemies)
+                enemy_collide_projectile(players, &enemies, &attacks, &score);
+            clock_gettime(CLOCK_MONOTONIC_RAW, &move_clock);
         }
     }
     return (0);

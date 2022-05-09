@@ -13,6 +13,7 @@ MAIN	=	src/main.c
 
 SRC	=	src/get_socket_line.c	\
 		src/manage_clients.c	\
+		src/attack_enemy.c	\
 		src/init_server.c	\
 		src/players.c		\
 		src/attacks.c		\
@@ -20,7 +21,7 @@ SRC	=	src/get_socket_line.c	\
 
 OBJ	=	$(SRC:.c=.o)
 
-LDFLAGS	=	-lcsfml-system
+LDFLAGS	=	-lm
 CFLAGS	=	-Wall -Wextra
 CPPFLAGS=	-I include
 

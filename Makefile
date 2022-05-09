@@ -15,6 +15,7 @@ SRC	=	src/particle_refresh_funcs.c	\
 		src/enemy_attack_common.c	\
 		src/get_socket_line.c		\
 		src/particle_array.c		\
+		src/server_connect.c		\
 		src/fireworks.c			\
 		src/particle.c			\
 		src/players.c			\

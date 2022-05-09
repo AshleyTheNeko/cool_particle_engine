@@ -1,7 +1,7 @@
 #include "attack.h"
 #include <stdlib.h>
 
-attacks_t *attack_create(attacks_t *attacks, sfVector2f position)
+attacks_t *attack_create(attacks_t *attacks, sfVector2f position, int id)
 {
     attacks_t *new;
 
@@ -9,6 +9,7 @@ attacks_t *attack_create(attacks_t *attacks, sfVector2f position)
     if (attacks)
         attacks->prev = new;
     new->next = attacks;
+    new->id = id;
     new->position = position;
     return (new);
 }
@@ -25,7 +26,8 @@ attacks_t *attack_pop(attacks_t *array)
     return (tmp);
 }
 
-attacks_t *attacks_refresh(attacks_t *attacks, particle_arr_t **array)
+attacks_t *attacks_refresh(
+    attacks_t *attacks, particle_arr_t **array, float time)
 {
     attacks_t *tmp = attacks;
 
@@ -41,7 +43,7 @@ attacks_t *attacks_refresh(attacks_t *attacks, particle_arr_t **array)
                 create_particles((particle_request_t){
                     (sfColor){.a = 0xFF, .r = 155, .g = 155, .b = 155}, 5,
                     tmp->position, 4, 2, 3, NULL}));
-            tmp->position.y -= 5;
+            tmp->position.y -= (5.f * time);
             tmp = tmp->next;
         }
     }

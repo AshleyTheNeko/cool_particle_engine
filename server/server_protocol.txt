@@ -1,0 +1,18 @@
+score information:      scr:[score]
+players connected:      pls:[player id]:[position]:...
+attacks:                atks:[attack id]:[x position]:[y position]:...
+enemies:                enys:[attack id]:[x position]:[y position]:[speed]:...
+
+enemy hit:              hit:[enemy id]:[attack id]
+enemy spawn:            spwn:[enemy id]:[position]:[speed]
+
+player move:            mv:[player id]:[position]
+player attack:          atk:[attack id]:[x position]
+player connect:         con:[player id]
+player disconnect:      dis:[player id]
+
+
+
+// will be deleted if useless
+enemy at bottom:        enm_tch:[enemy id]
+attack out of screen:   scr:[attack id]

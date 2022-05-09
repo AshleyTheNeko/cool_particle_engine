@@ -29,4 +29,5 @@ unit_tests
 vgcore*
 .vscode
 *.log
+server/server
 *nopushplz*

@@ -1,5 +1,5 @@
-#include <sys/socket.h>
 #include "server.h"
+#include <sys/socket.h>
 
 int main(void)
 {
