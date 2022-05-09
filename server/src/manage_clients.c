@@ -76,7 +76,7 @@ int listen_clients(file_descriptor_t server)
     int speed;
     int position;
     int id_giver = 0;
-    int delay = 4000;
+    unsigned long delay = 4000;
 
     srand(time(NULL));
     clock_gettime(CLOCK_MONOTONIC_RAW, &move_clock);
