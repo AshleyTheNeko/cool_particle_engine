@@ -21,7 +21,7 @@ If you want to run and test this project, you'll need:
 - CSFML
 - GCC
 
-Simply type make and then execute "particle"
+Simply type make and then execute "particle [server ip] [server port]"
 
 
 Enjoy :)
