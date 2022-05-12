@@ -1,4 +1,4 @@
-# The cool particle engine that is also a garbage and a game, somehow.
+# The cool particle engine that became a game, somehow.
 
 Hi there!
 This is some demo of a cool particle engine I made in 24 hours to help a student.
